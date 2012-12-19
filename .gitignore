@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # built application files
 *.apk
 *.ap_
@@ -18,3 +19,21 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+
+#Gemeter gitignore
+default.properties
+build.properties
+local.properties
+bin/
+gen/
+res/drawable/
+res/raw/
+scripts/resources/*.diff
+obj/
+epubs/
+mappings/
+READY/
+.classpath
+.settings
+*.so
+*~
