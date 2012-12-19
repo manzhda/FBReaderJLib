@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # built application files
 *.apk
 *.ap_
@@ -13,10 +12,17 @@
 bin/
 gen/
 
+# IDEA files
+.idea/
+out/
+*.iml
+proguard_logs/
+
 # Local configuration file (sdk path, etc)
 local.properties
 
 # Eclipse project files
+.userSettings/
 .classpath
 .project
 
