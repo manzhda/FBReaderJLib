@@ -21,7 +21,7 @@ package org.geometerplus.zlibrary.text.view;
 
 import java.util.ArrayList;
 
-final class ZLTextPage {
+public final class ZLTextPage {
 	final ZLTextWordCursor StartCursor = new ZLTextWordCursor();
 	final ZLTextWordCursor EndCursor = new ZLTextWordCursor();
 	final ArrayList<ZLTextLineInfo> LineInfos = new ArrayList<ZLTextLineInfo>();

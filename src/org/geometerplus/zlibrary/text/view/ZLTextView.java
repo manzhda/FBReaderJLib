@@ -21,10 +21,7 @@ package org.geometerplus.zlibrary.text.view;
 
 import java.util.*;
 
-import org.geometerplus.expansion.CursorDrawer;
-import org.geometerplus.expansion.PolygonCursorDrawer;
-import org.geometerplus.expansion.Highlights;
-import org.geometerplus.expansion.SingleHighlight;
+import org.geometerplus.expansion.*;
 import org.geometerplus.zlibrary.core.application.ZLApplication;
 import org.geometerplus.zlibrary.core.view.ZLPaintContext;
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
@@ -66,6 +63,7 @@ public abstract class ZLTextView extends ZLTextViewBase {
 
 	private ZLTextSelection mySelection;
 
+    private List<PageUpdateListener> mPageUpdateListeners = new LinkedList<PageUpdateListener>();
 	private Highlights mHighlightings;
     private CursorDrawer mCursorDrawer;
 
@@ -103,6 +101,20 @@ public abstract class ZLTextView extends ZLTextViewBase {
 
     public Highlights getHighlightings() {
         return mHighlightings;
+    }
+
+    public void addPageUpdateListener(PageUpdateListener listener) {
+        mPageUpdateListeners.add(listener);
+    }
+
+    public void removePageUpdateListener(PageUpdateListener listener) {
+        mPageUpdateListeners.remove(listener);
+    }
+
+    public void notifyPageUpdate(ZLTextPage currentPage) {
+        for (PageUpdateListener listener : mPageUpdateListeners) {
+            listener.onPageUpdate(currentPage);
+        }
     }
 
     public ZLTextModel getModel() {
@@ -271,6 +283,8 @@ public abstract class ZLTextView extends ZLTextViewBase {
 				break;
 			}
 		}
+
+        notifyPageUpdate(myCurrentPage);
 	}
 
 	public void highlight(ZLTextPosition start, ZLTextPosition end) {
@@ -735,6 +749,8 @@ public abstract class ZLTextView extends ZLTextViewBase {
 		}
 
 		gotoPositionByEnd(paragraphIndex, wordIndex, 0);
+
+        notifyPageUpdate(myCurrentPage);
 	}
 
 	public void gotoHome() {
@@ -1192,6 +1208,8 @@ public abstract class ZLTextView extends ZLTextViewBase {
 			myScrollingMode = scrollingMode;
 			myOverlappingValue = value;
 		}
+
+        notifyPageUpdate(myCurrentPage);
 	}
 
 	public final synchronized void gotoPosition(ZLTextPosition position) {
@@ -1210,6 +1228,8 @@ public abstract class ZLTextView extends ZLTextViewBase {
 			if (myCurrentPage.isEmptyPage()) {
 				scrollPage(true, ScrollingMode.NO_OVERLAPPING, 0);
 			}
+
+            notifyPageUpdate(myCurrentPage);
 		}
 	}
 
@@ -1222,6 +1242,8 @@ public abstract class ZLTextView extends ZLTextViewBase {
 			if (myCurrentPage.isEmptyPage()) {
 				scrollPage(false, ScrollingMode.NO_OVERLAPPING, 0);
 			}
+
+            notifyPageUpdate(myCurrentPage);
 		}
 	}
 
