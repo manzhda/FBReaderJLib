@@ -121,7 +121,7 @@ public class Book {
 	private static final WeakReference<ZLImage> NULL_IMAGE = new WeakReference<ZLImage>(null);
 	private WeakReference<ZLImage> myCover;
 
-	Book(long id, ZLFile file, String title, String encoding, String language) {
+	public Book(long id, ZLFile file, String title, String encoding, String language) {
 		myId = id;
 		File = file;
 		myTitle = title;

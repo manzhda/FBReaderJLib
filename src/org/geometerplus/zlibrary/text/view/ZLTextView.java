@@ -21,6 +21,10 @@ package org.geometerplus.zlibrary.text.view;
 
 import java.util.*;
 
+import org.geometerplus.expansion.CursorDrawer;
+import org.geometerplus.expansion.PolygonCursorDrawer;
+import org.geometerplus.expansion.Highlights;
+import org.geometerplus.expansion.SingleHighlight;
 import org.geometerplus.zlibrary.core.application.ZLApplication;
 import org.geometerplus.zlibrary.core.view.ZLPaintContext;
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
@@ -61,12 +65,16 @@ public abstract class ZLTextView extends ZLTextViewBase {
 	private boolean myHighlightSelectedRegion = true;
 
 	private ZLTextSelection mySelection;
-	private ZLTextHighlighting myHighlighting;
+
+	private Highlights mHighlightings;
+    private CursorDrawer mCursorDrawer;
 
 	public ZLTextView(ZLApplication application) {
 		super(application);
 		mySelection = new ZLTextSelection(this);
-		myHighlighting = new ZLTextHighlighting();
+
+        mHighlightings = new SingleHighlight();
+        mCursorDrawer = new PolygonCursorDrawer(this);
 	}
 
 	public synchronized void setModel(ZLTextModel model) {
@@ -85,7 +93,19 @@ public abstract class ZLTextView extends ZLTextViewBase {
 		Application.getViewWidget().reset();
 	}
 
-	public ZLTextModel getModel() {
+    public void setCursorDrawer(CursorDrawer cursorDrawer) {
+        mCursorDrawer = cursorDrawer;
+    }
+
+    public void setHighlighting(Highlights highlighting) {
+        mHighlightings = highlighting;
+    }
+
+    public Highlights getHighlightings() {
+        return mHighlightings;
+    }
+
+    public ZLTextModel getModel() {
 		return myModel;
 	}
 
@@ -254,13 +274,13 @@ public abstract class ZLTextView extends ZLTextViewBase {
 	}
 
 	public void highlight(ZLTextPosition start, ZLTextPosition end) {
-		myHighlighting.setup(start, end);
+        mHighlightings.addHighlighting(start, end);
 		Application.getViewWidget().reset();
 		Application.getViewWidget().repaint();
 	}
 
 	public void clearHighlighting() {
-		if (myHighlighting.clear()) {
+		if (mHighlightings.clear()) {
 			Application.getViewWidget().reset();
 			Application.getViewWidget().repaint();
 		}
@@ -364,20 +384,14 @@ public abstract class ZLTextView extends ZLTextViewBase {
 		}
 	}
 
-	private void drawSelectionCursor(ZLPaintContext context, ZLTextSelection.Point pt) {
+	private void drawSelectionCursor(ZLPaintContext context, ZLTextPage page, ZLTextSelectionCursor cursor) {
+        ZLTextSelection.Point pt = getSelectionCursorPoint(page, cursor);
+
 		if (pt == null) {
 			return;
 		}
 
-		final int w = ZLTextSelectionCursor.getWidth() / 2;
-		final int h = ZLTextSelectionCursor.getHeight();
-		final int a = ZLTextSelectionCursor.getAccent();
-		final int[] xs = { pt.X, pt.X + w, pt.X + w, pt.X - w, pt.X - w };
-		final int[] ys = { pt.Y - a, pt.Y, pt.Y + h, pt.Y + h, pt.Y };
-		context.setFillColor(context.getBackgroundColor(), 192);
-		context.fillPolygon(xs, ys);
-		context.setLineColor(getTextColor(ZLTextHyperlink.NO_LINK));
-		context.drawPolygonalLine(xs, ys);
+        mCursorDrawer.drawSelectionCursor(context, pt, cursor);
 	}
 
 	@Override
@@ -454,8 +468,8 @@ public abstract class ZLTextView extends ZLTextViewBase {
 			selectedElementRegion.draw(context);
 		}
 
-		drawSelectionCursor(context, getSelectionCursorPoint(page, ZLTextSelectionCursor.Left));
-		drawSelectionCursor(context, getSelectionCursorPoint(page, ZLTextSelectionCursor.Right));
+        drawSelectionCursor(context, page, ZLTextSelectionCursor.Left);
+        drawSelectionCursor(context, page, ZLTextSelectionCursor.Right);
 	}
 
 	private ZLTextPage getPage(PageIndex pageIndex) {
@@ -767,7 +781,10 @@ public abstract class ZLTextView extends ZLTextViewBase {
 	private static final char[] SPACE = new char[] { ' ' };
 	private void drawTextLine(ZLTextPage page, ZLTextLineInfo info, int from, int to, int y) {
 		drawBackgroung(mySelection, getSelectedBackgroundColor(), page, info, from, to, y);
-		drawBackgroung(myHighlighting, getHighlightingColor(), page, info, from, to, y);
+
+        for (ZLTextAbstractHighlighting highlighting : mHighlightings.getHighlightings()) {
+            drawBackgroung(highlighting, getHighlightingColor(), page, info, from, to, y);
+        }
 
 		final ZLPaintContext context = myContext;
 		final ZLTextParagraphCursor paragraph = info.ParagraphCursor;
@@ -1492,7 +1509,7 @@ public abstract class ZLTextView extends ZLTextViewBase {
 		return findRegion(x, y, Integer.MAX_VALUE - 1, filter);
 	}
 
-	protected ZLTextRegion findRegion(int x, int y, int maxDistance, ZLTextRegion.Filter filter) {
+	public ZLTextRegion findRegion(int x, int y, int maxDistance, ZLTextRegion.Filter filter) {
 		return myCurrentPage.TextElementMap.findRegion(x, y, maxDistance, filter);
 	}
 

@@ -39,17 +39,17 @@ public enum ZLTextSelectionCursor {
 		}
 	}
 
-	static int getHeight() {
+	public static int getHeight() {
 		init();
 		return ourHeight;
 	}
 
-	static int getWidth() {
+	public static int getWidth() {
 		init();
 		return ourWidth;
 	}
 
-	static int getAccent() {
+	public static int getAccent() {
 		init();
 		return ourAccent;
 	}

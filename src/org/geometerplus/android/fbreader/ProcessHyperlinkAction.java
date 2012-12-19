@@ -34,9 +34,10 @@ import org.geometerplus.fbreader.network.NetworkLibrary;
 import org.geometerplus.android.fbreader.network.BookDownloader;
 import org.geometerplus.android.fbreader.network.BookDownloaderService;
 import org.geometerplus.android.fbreader.image.ImageViewActivity;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidActivity;
 
-class ProcessHyperlinkAction extends FBAndroidAction {
-	ProcessHyperlinkAction(FBReader baseActivity, FBReaderApp fbreader) {
+public class ProcessHyperlinkAction extends FBAndroidAction {
+	public ProcessHyperlinkAction(ZLAndroidActivity baseActivity, FBReaderApp fbreader) {
 		super(baseActivity, fbreader);
 	}
 

@@ -297,12 +297,16 @@ public final class ZLAndroidPaintContext extends ZLPaintContext {
 			? new Size(bitmap.getWidth(), bitmap.getHeight()) : null;
 	}
 
+    public void drawBitmap(int x, int y, Bitmap bitmap){
+        if (bitmap != null && !bitmap.isRecycled()) {
+            myCanvas.drawBitmap(bitmap, x, y - bitmap.getHeight(), myFillPaint);
+        }
+    }
+
 	@Override
 	public void drawImage(int x, int y, ZLImageData imageData, Size maxSize, ScalingType scaling) {
 		final Bitmap bitmap = ((ZLAndroidImageData)imageData).getBitmap(maxSize, scaling);
-		if (bitmap != null && !bitmap.isRecycled()) {
-			myCanvas.drawBitmap(bitmap, x, y - bitmap.getHeight(), myFillPaint);
-		}
+        drawBitmap(x, y, bitmap);
 	}
 
 	@Override

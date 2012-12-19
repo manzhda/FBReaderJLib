@@ -67,19 +67,15 @@ public final class FBView extends ZLTextView {
 		return myZoneMap;
 	}
 
-	public boolean onFingerSingleTap(int x, int y) {
+	@Override
+    public boolean onFingerSingleTap(int x, int y) {
 		if (super.onFingerSingleTap(x, y)) {
 			return true;
 		}
 
-		final ZLTextRegion region = findRegion(x, y, MAX_SELECTION_DISTANCE, ZLTextRegion.HyperlinkFilter);
-		if (region != null) {
-			selectRegion(region);
-			myReader.getViewWidget().reset();
-			myReader.getViewWidget().repaint();
-			myReader.runAction(ActionCode.PROCESS_HYPERLINK);
-			return true;
-		}
+        if (fingerProcessHyperlink(x, y)) {
+            return true;
+        }
 
 		myReader.runAction(getZoneMap().getActionByCoordinates(
 			x, y, myContext.getWidth(), myContext.getHeight(),
@@ -88,6 +84,18 @@ public final class FBView extends ZLTextView {
 
 		return true;
 	}
+
+    public boolean fingerProcessHyperlink(int x, int y) {
+        final ZLTextRegion region = findRegion(x, y, MAX_SELECTION_DISTANCE, ZLTextRegion.HyperlinkFilter);
+        if (region == null) {
+            return false;
+        }
+        selectRegion(region);
+        myReader.getViewWidget().reset();
+        myReader.getViewWidget().repaint();
+        myReader.runAction(ActionCode.PROCESS_HYPERLINK);
+        return true;
+    }
 
 	@Override
 	public boolean isDoubleTapSupported() {
@@ -110,12 +118,9 @@ public final class FBView extends ZLTextView {
 			return true;
 		}
 
-		final ZLTextSelectionCursor cursor = findSelectionCursor(x, y, MAX_SELECTION_DISTANCE);
-		if (cursor != ZLTextSelectionCursor.None) {
-			myReader.runAction(ActionCode.SELECTION_HIDE_PANEL);
-			moveSelectionCursorTo(cursor, x, y);
-			return true;
-		}
+		if (fingerMoveCursor(x, y)) {
+            return true;
+        }
 
 		if (myReader.AllowScreenBrightnessAdjustmentOption.getValue() && x < myContext.getWidth() / 10) {
 			myIsBrightnessAdjustmentInProgress = true;
@@ -128,6 +133,16 @@ public final class FBView extends ZLTextView {
 		return true;
 	}
 
+    public boolean fingerMoveCursor(int x, int y) {
+        final ZLTextSelectionCursor cursor = findSelectionCursor(x, y, MAX_SELECTION_DISTANCE);
+        if (cursor == ZLTextSelectionCursor.None) {
+            return false;
+        }
+        myReader.runAction(ActionCode.SELECTION_HIDE_PANEL);
+        moveSelectionCursorTo(cursor, x, y);
+        return true;
+    }
+
 	private boolean isFlickScrollingEnabled() {
 		final ScrollingPreferences.FingerScrolling fingerScrolling =
 			ScrollingPreferences.Instance().FingerScrollingOption.getValue();
@@ -136,7 +151,7 @@ public final class FBView extends ZLTextView {
 			fingerScrolling == ScrollingPreferences.FingerScrolling.byTapAndFlick;
 	}
 
-	private void startManualScrolling(int x, int y) {
+	public void startManualScrolling(int x, int y) {
 		if (!isFlickScrollingEnabled()) {
 			return;
 		}
@@ -151,11 +166,9 @@ public final class FBView extends ZLTextView {
 			return true;
 		}
 
-		final ZLTextSelectionCursor cursor = getSelectionCursorInMovement();
-		if (cursor != ZLTextSelectionCursor.None) {
-			moveSelectionCursorTo(cursor, x, y);
-			return true;
-		}
+		if (fingerMoveSelectionCursor(x, y)) {
+            return true;
+        }
 
 		synchronized (this) {
 			if (myIsBrightnessAdjustmentInProgress) {
@@ -176,16 +189,23 @@ public final class FBView extends ZLTextView {
 		return true;
 	}
 
+    public boolean fingerMoveSelectionCursor(int x, int y) {
+        final ZLTextSelectionCursor cursor = getSelectionCursorInMovement();
+        if (cursor == ZLTextSelectionCursor.None) {
+            return false;
+        }
+        moveSelectionCursorTo(cursor, x, y);
+        return true;
+    }
+
 	public boolean onFingerRelease(int x, int y) {
 		if (super.onFingerRelease(x, y)) {
 			return true;
 		}
 
-		final ZLTextSelectionCursor cursor = getSelectionCursorInMovement();
-		if (cursor != ZLTextSelectionCursor.None) {
-			releaseSelectionCursor();
-			return true;
-		}
+        if (fingerReleaseSelectionCursor()) {
+            return true;
+        }
 
 		if (myIsBrightnessAdjustmentInProgress) {
 			myIsBrightnessAdjustmentInProgress = false;
@@ -202,59 +222,72 @@ public final class FBView extends ZLTextView {
 		return true;
 	}
 
+    public boolean fingerReleaseSelectionCursor() {
+        final ZLTextSelectionCursor cursor = getSelectionCursorInMovement();
+        if (cursor == ZLTextSelectionCursor.None) {
+            return false;
+        }
+        releaseSelectionCursor();
+        return true;
+    }
+
 	public boolean onFingerLongPress(int x, int y) {
 		if (super.onFingerLongPress(x, y)) {
 			return true;
 		}
 
-		final ZLTextRegion region = findRegion(x, y, MAX_SELECTION_DISTANCE, ZLTextRegion.AnyRegionFilter);
-		if (region != null) {
-			final ZLTextRegion.Soul soul = region.getSoul();
-			boolean doSelectRegion = false;
-			if (soul instanceof ZLTextWordRegionSoul) {
-				switch (myReader.WordTappingActionOption.getValue()) {
-					case startSelecting:
-						myReader.runAction(ActionCode.SELECTION_HIDE_PANEL);
-						initSelection(x, y);
-						final ZLTextSelectionCursor cursor = findSelectionCursor(x, y);
-						if (cursor != ZLTextSelectionCursor.None) {
-							moveSelectionCursorTo(cursor, x, y);
-						}
-						return true;
-					case selectSingleWord:
-					case openDictionary:
-						doSelectRegion = true;
-						break;
-				}
-			} else if (soul instanceof ZLTextImageRegionSoul) {
-				doSelectRegion =
-					myReader.ImageTappingActionOption.getValue() !=
-					FBReaderApp.ImageTappingAction.doNothing;
-			} else if (soul instanceof ZLTextHyperlinkRegionSoul) {
-				doSelectRegion = true;
-			}
+        return fingerInitCursor(x, y);
+    }
 
-			if (doSelectRegion) {
-				selectRegion(region);
-				myReader.getViewWidget().reset();
-				myReader.getViewWidget().repaint();
-				return true;
-			}
-		}
+    public boolean fingerInitCursor(int x, int y) {
+        final ZLTextRegion region = findRegion(x, y, MAX_SELECTION_DISTANCE, ZLTextRegion.AnyRegionFilter);
+        if (region == null) {
+            return false;
+        }
 
-		return false;
-	}
+        final ZLTextRegion.Soul soul = region.getSoul();
+        boolean doSelectRegion = false;
+        if (soul instanceof ZLTextWordRegionSoul) {
+            switch (myReader.WordTappingActionOption.getValue()) {
+                case startSelecting:
+                    myReader.runAction(ActionCode.SELECTION_HIDE_PANEL);
+                    initSelection(x, y);
+                    final ZLTextSelectionCursor cursor = findSelectionCursor(x, y);
+                    if (cursor != ZLTextSelectionCursor.None) {
+                        moveSelectionCursorTo(cursor, x, y);
+                    }
+                    return true;
+                case selectSingleWord:
+                case openDictionary:
+                    doSelectRegion = true;
+                    break;
+            }
+        } else if (soul instanceof ZLTextImageRegionSoul) {
+            doSelectRegion =
+                    myReader.ImageTappingActionOption.getValue() !=
+                            FBReaderApp.ImageTappingAction.doNothing;
+        } else if (soul instanceof ZLTextHyperlinkRegionSoul) {
+            doSelectRegion = true;
+        }
+
+        if (doSelectRegion) {
+            selectRegion(region);
+            myReader.getViewWidget().reset();
+            myReader.getViewWidget().repaint();
+            return true;
+        }
+
+        return false;
+    }
 
 	public boolean onFingerMoveAfterLongPress(int x, int y) {
 		if (super.onFingerMoveAfterLongPress(x, y)) {
 			return true;
 		}
 
-		final ZLTextSelectionCursor cursor = getSelectionCursorInMovement();
-		if (cursor != ZLTextSelectionCursor.None) {
-			moveSelectionCursorTo(cursor, x, y);
-			return true;
-		}
+        if (fingerMoveSelectionCursor(x, y)) {
+            return true;
+        }
 
 		ZLTextRegion region = getSelectedRegion();
 		if (region != null) {
@@ -284,11 +317,9 @@ public final class FBView extends ZLTextView {
 			return true;
 		}
 
-		final ZLTextSelectionCursor cursor = getSelectionCursorInMovement();
-		if (cursor != ZLTextSelectionCursor.None) {
-			releaseSelectionCursor();
-			return true;
-		}
+        if (fingerReleaseSelectionCursor()) {
+            return true;
+        }
 
 		final ZLTextRegion region = getSelectedRegion();
 		if (region != null) {

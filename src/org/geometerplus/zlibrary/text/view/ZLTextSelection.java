@@ -19,10 +19,10 @@
 
 package org.geometerplus.zlibrary.text.view;
 
-class ZLTextSelection implements ZLTextAbstractHighlighting {
-	static class Point {
-		int X;
-		int Y;
+public class ZLTextSelection implements ZLTextAbstractHighlighting {
+	public static class Point {
+		public int X;
+		public int Y;
 
 		Point(int x, int y) {
 			X = x;

@@ -21,6 +21,7 @@ package org.geometerplus.zlibrary.core.application;
 
 import java.util.*;
 
+import org.geometerplus.expansion.RepaintListener;
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
 import org.geometerplus.zlibrary.core.util.ZLBoolean3;
 import org.geometerplus.zlibrary.core.view.ZLView;
@@ -39,6 +40,7 @@ public abstract class ZLApplication {
 	private volatile ZLView myView;
 
 	private final HashMap<String,ZLAction> myIdToActionMap = new HashMap<String,ZLAction>();
+    private final List<RepaintListener> mRepaintListeners = new LinkedList<RepaintListener>();
 
 	protected ZLApplication() {
 		ourInstance = this;
@@ -90,14 +92,26 @@ public abstract class ZLApplication {
 		return myWindow != null ? myWindow.getViewWidget() : null;
 	}
 
-	public final void onRepaintFinished() {
+	public void onRepaintFinished() {
 		if (myWindow != null) {
 			myWindow.refresh();
 		}
 		for (PopupPanel popup : popupPanels()) {
 			popup.update();
 		}
+
+		for (RepaintListener listener : mRepaintListeners) {
+			listener.onRepaint();
+		}
 	}
+
+    public void addRepaintListener(RepaintListener listener) {
+        mRepaintListeners.add(listener);
+    }
+
+    public void removeRepaintListener(RepaintListener listener) {
+        mRepaintListeners.remove(listener);
+    }
 
 	public final void onViewChanged() {
 		hideActivePopup();

@@ -87,7 +87,7 @@ public abstract class ZLAndroidActivity extends Activity {
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.main);
+		setContentView(getActivityLayout());
 		setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
 		getLibrary().setActivity(this);
@@ -108,6 +108,10 @@ public abstract class ZLAndroidActivity extends Activity {
 
 		ZLApplication.Instance().getViewWidget().repaint();
 	}
+
+    protected int getActivityLayout() {
+        return R.layout.main;
+    }
 
 	protected abstract Runnable getPostponedInitAction();
 

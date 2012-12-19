@@ -19,16 +19,25 @@
 
 package org.geometerplus.zlibrary.text.view;
 
-class ZLTextHighlighting implements ZLTextAbstractHighlighting {
+public class ZLTextHighlighting implements ZLTextAbstractHighlighting {
+    long mId;
 	private ZLTextPosition myStartPosition;
 	private ZLTextPosition myEndPosition;
 
-	void setup(ZLTextPosition start, ZLTextPosition end) {
+	public void setup(ZLTextPosition start, ZLTextPosition end) {
 		myStartPosition = new ZLTextFixedPosition(start);
 		myEndPosition = new ZLTextFixedPosition(end);
 	}
 
-	public boolean clear() {
+    public long getId() {
+        return mId;
+    }
+
+    public void setId(long id) {
+        mId = id;
+    }
+
+    public boolean clear() {
 		if (isEmpty()) {
 			return false;
 		}

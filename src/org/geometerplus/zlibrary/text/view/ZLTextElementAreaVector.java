@@ -102,7 +102,7 @@ final class ZLTextElementAreaVector {
 		synchronized (myAreas) {
 			for (int i = myAreas.size() - 1; i >= 0; --i) {
 				final ZLTextElementArea area = myAreas.get(i);
-				if (position.compareTo(area) > 0) {
+				if (position.compareTo(area) >= 0) {
 					return area;
 				}
 			}

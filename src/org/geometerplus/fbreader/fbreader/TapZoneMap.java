@@ -94,8 +94,8 @@ public class TapZoneMap {
 	private TapZoneMap(String name) {
         Name = name;
 		myOptionGroupName = "TapZones:" + name;
-		myHeight = new ZLIntegerRangeOption(myOptionGroupName, "Height", 2, 5, 3);
-		myWidth = new ZLIntegerRangeOption(myOptionGroupName, "Width", 2, 5, 3);
+		myHeight = new ZLIntegerRangeOption(myOptionGroupName, "Height", 1, 9999, 3);
+		myWidth = new ZLIntegerRangeOption(myOptionGroupName, "Width", 1, 9999, 3);
 		final ZLFile mapFile = ZLFile.createFileByPath(
 			"default/tapzones/" + name.toLowerCase() + ".xml"
 		);
