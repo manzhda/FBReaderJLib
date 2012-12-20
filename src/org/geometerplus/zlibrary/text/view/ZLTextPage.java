@@ -39,7 +39,15 @@ public final class ZLTextPage {
 		PaintState = PaintStateEnum.NOTHING_TO_PAINT;
 	}
 
-	void moveStartCursor(ZLTextParagraphCursor cursor) {
+    public ZLTextWordCursor getStartCursor() {
+        return StartCursor;
+    }
+
+    public ZLTextWordCursor getEndCursor() {
+        return EndCursor;
+    }
+
+    void moveStartCursor(ZLTextParagraphCursor cursor) {
 		StartCursor.setCursor(cursor);
 		EndCursor.reset();
 		LineInfos.clear();

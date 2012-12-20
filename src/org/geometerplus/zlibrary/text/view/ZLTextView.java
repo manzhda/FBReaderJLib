@@ -1242,8 +1242,6 @@ public abstract class ZLTextView extends ZLTextViewBase {
 			if (myCurrentPage.isEmptyPage()) {
 				scrollPage(false, ScrollingMode.NO_OVERLAPPING, 0);
 			}
-
-            notifyPageUpdate(myCurrentPage);
 		}
 	}
 
