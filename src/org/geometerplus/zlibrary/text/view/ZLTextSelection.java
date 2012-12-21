@@ -237,6 +237,14 @@ public class ZLTextSelection implements ZLTextAbstractHighlighting {
 		return null;
 	}
 
+    public void setLeftMostRegionSoul(ZLTextRegion.Soul yLeftMostRegionSoul) {
+        myLeftMostRegionSoul = yLeftMostRegionSoul;
+    }
+
+    public void setRightMostRegionSoul(ZLTextRegion.Soul yRightMostRegionSoul) {
+        myRightMostRegionSoul = yRightMostRegionSoul;
+    }
+
 	boolean hasAPartBeforePage(ZLTextPage page) {
 		if (isEmpty()) {
 			return false;

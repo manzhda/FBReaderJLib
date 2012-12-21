@@ -103,6 +103,10 @@ public abstract class ZLTextView extends ZLTextViewBase {
         return mHighlightings;
     }
 
+    public ZLTextSelection getSelection() {
+        return mySelection;
+    }
+
     public void addPageUpdateListener(PageUpdateListener listener) {
         mPageUpdateListeners.add(listener);
     }
