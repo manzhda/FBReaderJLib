@@ -87,7 +87,11 @@ public final class Bookmark extends ZLTextFixedPosition {
 		return myId;
 	}
 
-	public long getBookId() {
+    public void setId(long yId) {
+        myId = yId;
+    }
+
+    public long getBookId() {
 		return myBookId;
 	}
 

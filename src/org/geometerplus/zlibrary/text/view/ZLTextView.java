@@ -490,7 +490,7 @@ public abstract class ZLTextView extends ZLTextViewBase {
         drawSelectionCursor(context, page, ZLTextSelectionCursor.Right);
 	}
 
-	private ZLTextPage getPage(PageIndex pageIndex) {
+	public ZLTextPage getPage(PageIndex pageIndex) {
 		switch (pageIndex) {
 			default:
 			case current:
