@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.content.*;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.support.v4.app.FragmentActivity;
 import android.view.*;
 import android.os.PowerManager;
 
@@ -35,7 +36,7 @@ import org.geometerplus.zlibrary.core.filesystem.ZLFile;
 import org.geometerplus.zlibrary.ui.android.R;
 import org.geometerplus.zlibrary.ui.android.application.ZLAndroidApplicationWindow;
 
-public abstract class ZLAndroidActivity extends Activity {
+public abstract class ZLAndroidActivity extends FragmentActivity {
 	protected abstract ZLApplication createApplication();
 
 	private static final String REQUESTED_ORIENTATION_KEY = "org.geometerplus.zlibrary.ui.android.library.androidActiviy.RequestedOrientation";
@@ -47,7 +48,7 @@ public abstract class ZLAndroidActivity extends Activity {
 		getWindow().setAttributes(attrs);
 	}
 
-	final void setScreenBrightness(int percent) {
+	public final void setScreenBrightness(int percent) {
 		if (percent < 1) {
 			percent = 1;
 		} else if (percent > 100) {
@@ -59,7 +60,7 @@ public abstract class ZLAndroidActivity extends Activity {
 		getLibrary().ScreenBrightnessLevelOption.setValue(percent);
 	}
 
-	final int getScreenBrightness() {
+	public final int getScreenBrightness() {
 		final int level = (int)(100 * getWindow().getAttributes().screenBrightness);
 		return (level >= 0) ? level : 50;
 	}
