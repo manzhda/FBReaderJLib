@@ -66,6 +66,7 @@ public abstract class ZLTextView extends ZLTextViewBase {
     private List<PageUpdateListener> mPageUpdateListeners = new LinkedList<PageUpdateListener>();
 	private Highlights mHighlightings;
     private CursorDrawer mCursorDrawer;
+    private CursorDistanceCounter mCursorDistanceCounter;
 
 	public ZLTextView(ZLApplication application) {
 		super(application);
@@ -73,6 +74,7 @@ public abstract class ZLTextView extends ZLTextViewBase {
 
         mHighlightings = new SingleHighlight();
         mCursorDrawer = new PolygonCursorDrawer(this);
+        mCursorDistanceCounter = new FBCursorDistanceCounter();
 	}
 
 	public synchronized void setModel(ZLTextModel model) {
@@ -93,6 +95,10 @@ public abstract class ZLTextView extends ZLTextViewBase {
 
     public void setCursorDrawer(CursorDrawer cursorDrawer) {
         mCursorDrawer = cursorDrawer;
+    }
+
+    public void setCursorDistanceCounter(CursorDistanceCounter cursorDistanceCounter) {
+        mCursorDistanceCounter = cursorDistanceCounter;
     }
 
     public void setHighlighting(Highlights highlighting) {
@@ -351,34 +357,6 @@ public abstract class ZLTextView extends ZLTextViewBase {
 		return null;
 	}
 
-	private int distanceToCursor(int x, int y, ZLTextSelection.Point cursorPoint) {
-		if (cursorPoint == null) {
-			return Integer.MAX_VALUE;
-		}
-
-		final int dX, dY;
-
-		final int w = ZLTextSelectionCursor.getWidth() / 2;
-		if (x < cursorPoint.X - w) {
-			dX = cursorPoint.X - w - x;
-		} else if (x > cursorPoint.X + w) {
-			dX = x - cursorPoint.X - w;
-		} else {
-			dX = 0;
-		}
-
-		final int h = ZLTextSelectionCursor.getHeight();
-		if (y < cursorPoint.Y) {
-			dY = cursorPoint.Y - y;
-		} else if (y > cursorPoint.Y + h) {
-			dY = y - cursorPoint.Y - h;
-		} else {
-			dY = 0;
-		}
-
-		return Math.max(dX, dY);
-	}
-
 	protected ZLTextSelectionCursor findSelectionCursor(int x, int y) {
 		return findSelectionCursor(x, y, Integer.MAX_VALUE);
 	}
@@ -388,12 +366,10 @@ public abstract class ZLTextView extends ZLTextViewBase {
 			return ZLTextSelectionCursor.None;
 		}
 
-		final int leftDistance = distanceToCursor(
-			x, y, getSelectionCursorPoint(myCurrentPage, ZLTextSelectionCursor.Left)
-		);
-		final int rightDistance = distanceToCursor(
-			x, y, getSelectionCursorPoint(myCurrentPage, ZLTextSelectionCursor.Right)
-		);
+        final int leftDistance = mCursorDistanceCounter.distance(ZLTextSelectionCursor.Left,
+                getSelectionCursorPoint(myCurrentPage, ZLTextSelectionCursor.Left), x, y);
+        final int rightDistance = mCursorDistanceCounter.distance(ZLTextSelectionCursor.Right,
+                getSelectionCursorPoint(myCurrentPage, ZLTextSelectionCursor.Right), x, y);
 
 		if (rightDistance < leftDistance) {
 			return rightDistance <= maxDistance ? ZLTextSelectionCursor.Right : ZLTextSelectionCursor.None;
