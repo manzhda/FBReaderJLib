@@ -58,6 +58,7 @@ public class ColorProfile {
 	public final ZLColorOption SelectionBackgroundOption;
 	public final ZLColorOption SelectionForegroundOption;
 	public final ZLColorOption HighlightingOption;
+	public final ZLColorOption SearchMarkOption;
 	public final ZLColorOption RegularTextOption;
 	public final ZLColorOption HyperlinkTextOption;
 	public final ZLColorOption VisitedHyperlinkTextOption;
@@ -91,6 +92,8 @@ public class ColorProfile {
 				createOption(name, "SelectionForeground", 255, 255, 220);
 			HighlightingOption =
 				createOption(name, "Highlighting", 96, 96, 128);
+            SearchMarkOption =
+				createOption(name, "SearchMark", 96, 96, 128);
 			RegularTextOption =
 				createOption(name, "Text", 192, 192, 192);
 			HyperlinkTextOption =
@@ -110,6 +113,8 @@ public class ColorProfile {
 				createOption(name, "SelectionForeground", 255, 255, 220);
 			HighlightingOption =
 				createOption(name, "Highlighting", 255, 192, 128);
+            SearchMarkOption =
+				createOption(name, "SearchMark", 255, 192, 128);
 			RegularTextOption =
 				createOption(name, "Text", 0, 0, 0);
 			HyperlinkTextOption =

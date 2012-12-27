@@ -440,7 +440,12 @@ public final class FBView extends ZLTextView {
 		return myReader.getColorProfile().HighlightingOption.getValue();
 	}
 
-	private class Footer implements FooterArea {
+    @Override
+    public ZLColor getSearchMarkColor() {
+        return myReader.getColorProfile().SearchMarkOption.getValue();
+    }
+
+    private class Footer implements FooterArea {
 		private Runnable UpdateTask = new Runnable() {
 			public void run() {
 				myReader.getViewWidget().repaint();
