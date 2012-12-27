@@ -484,7 +484,8 @@ public class ZLAndroidWidget extends View implements ZLViewWidget, View.OnLongCl
 	}
 
 	private int getMainAreaHeight() {
-		final ZLView.FooterArea footer = ZLApplication.Instance().getCurrentView().getFooterArea();
-		return footer != null ? getHeight() - footer.getHeight() : getHeight();
+//		final ZLView.FooterArea footer = ZLApplication.Instance().getCurrentView().getFooterArea();
+//		return footer != null ? getHeight() - footer.getHeight() : getHeight();
+        return getHeight();
 	}
 }
