@@ -29,11 +29,20 @@ import org.geometerplus.zlibrary.ui.android.image.ZLAndroidImageManager;
 public abstract class ZLAndroidApplication extends Application {
 	public ZLAndroidApplicationWindow myMainWindow;
 
+    private static ZLAndroidApplication mInstance;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
+
+        mInstance = this;
+
 		new ZLSQLiteConfig(this);
 		new ZLAndroidImageManager();
 		new ZLAndroidLibrary(this);
 	}
+
+    public static ZLAndroidApplication getInstance() {
+        return mInstance;
+    }
 }
