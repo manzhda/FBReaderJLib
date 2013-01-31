@@ -20,7 +20,7 @@
 package org.geometerplus.zlibrary.text.view;
 
 public class ZLTextHighlighting implements ZLTextAbstractHighlighting {
-    long mId;
+    private long mId;
 	private ZLTextPosition myStartPosition;
 	private ZLTextPosition myEndPosition;
 

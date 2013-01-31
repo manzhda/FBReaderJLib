@@ -20,39 +20,43 @@
 package org.geometerplus.fbreader;
 
 import android.os.Environment;
-
 import org.geometerplus.zlibrary.core.options.ZLStringOption;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidApplication;
 
 public abstract class Paths {
-	public static String cardDirectory() {
-		return Environment.getExternalStorageDirectory().getPath();
-	}
+    public static String cardDirectory() {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            return Environment.getExternalStorageDirectory().getAbsolutePath();
+        } else {
+            return ZLAndroidApplication.getInstance().getCacheDir().getAbsolutePath();
+        }
+    }
 
-	public static ZLStringOption BooksDirectoryOption() {
-		return new ZLStringOption("Files", "BooksDirectory", cardDirectory() + "/Books");
-	}
+    public static ZLStringOption BooksDirectoryOption() {
+        return new ZLStringOption("Files", "BooksDirectory", cardDirectory() + "/Books");
+    }
 
-	public static ZLStringOption FontsDirectoryOption() {
-		return new ZLStringOption("Files", "FontsDirectory", cardDirectory() + "/Fonts");
-	}
+    public static ZLStringOption FontsDirectoryOption() {
+        return new ZLStringOption("Files", "FontsDirectory", cardDirectory() + "/Fonts");
+    }
 
-	public static ZLStringOption WallpapersDirectoryOption() {
-		return new ZLStringOption("Files", "WallpapersDirectory", cardDirectory() + "/Wallpapers");
-	}
+    public static ZLStringOption WallpapersDirectoryOption() {
+        return new ZLStringOption("Files", "WallpapersDirectory", cardDirectory() + "/Wallpapers");
+    }
 
-	public static String mainBookDirectory() {
-		return BooksDirectoryOption().getValue();
-	}
+    public static String mainBookDirectory() {
+        return BooksDirectoryOption().getValue();
+    }
 
-	public static String cacheDirectory() {
-		return mainBookDirectory() + "/.FBReader";
-	}
+    public static String cacheDirectory() {
+        return mainBookDirectory() + "/.FBReader";
+    }
 
-	public static String networkCacheDirectory() {
-		return cacheDirectory() + "/cache";
-	}
+    public static String networkCacheDirectory() {
+        return cacheDirectory() + "/cache";
+    }
 
-	public static String systemShareDirectory() {
-		return "/system/usr/share/FBReader";
-	}
+    public static String systemShareDirectory() {
+        return "/system/usr/share/FBReader";
+    }
 }
