@@ -21,7 +21,9 @@ package org.geometerplus.zlibrary.core.filesystem;
 
 import java.io.*;
 import java.util.*;
+
 import org.amse.ys.zip.*;
+import org.geometerplus.expansion.crypto.AESEncryptorFBreader;
 
 final class ZLZipEntryFile extends ZLArchiveEntryFile {
 	static List<ZLFile> archiveEntries(ZLFile archive) {
@@ -87,6 +89,14 @@ final class ZLZipEntryFile extends ZLArchiveEntryFile {
 
 	@Override
 	public InputStream getInputStream() throws IOException {
-		return getZipFile(myParent).getInputStream(myName);
+        InputStream inputStream = getZipFile(myParent).getInputStream(myName);
+
+        if(myName.contains("html") && AESEncryptorFBreader.isEncrypted(inputStream)){
+            InputStream decryptedStream = AESEncryptorFBreader.decrypt(inputStream);
+            inputStream.close();
+            return decryptedStream;
+        }
+
+		return inputStream;
 	}
 }

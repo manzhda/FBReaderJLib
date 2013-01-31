@@ -42,11 +42,11 @@ public class PluginCollection {
 		if (ourInstance == null) {
 			ourInstance = new PluginCollection();
 
-			// This code can not be moved to constructor because nativePlugins() is a native method
-			for (NativeFormatPlugin p : ourInstance.nativePlugins()) {
-				ourInstance.addPlugin(p);
-				System.err.println("native plugin: " + p);
-			}
+//			// This code can not be moved to constructor because nativePlugins() is a native method
+//			for (NativeFormatPlugin p : ourInstance.nativePlugins()) {
+//				ourInstance.addPlugin(p);
+//				System.err.println("native plugin: " + p);
+//			}
 		}
 		return ourInstance;
 	}
