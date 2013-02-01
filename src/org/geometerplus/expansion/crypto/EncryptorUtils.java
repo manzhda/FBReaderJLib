@@ -74,16 +74,10 @@ public class EncryptorUtils {
 
     private static boolean equals(byte[] prefix, byte[] pattern) {
         for (int i = 0; i < prefix.length; i++) {
-            char infile = (char) prefix[i];
-            char inpattern = (char) pattern[i];
-
-            System.out.println(infile + " " + inpattern);
-
             if (prefix[i] != pattern[i]) {
                 return false;
             }
         }
-
         return true;
     }
 

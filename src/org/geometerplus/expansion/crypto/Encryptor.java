@@ -65,7 +65,7 @@ public class Encryptor {
             outData = cipher.doFinal(inDataArray);
         } catch (Exception e) {
             System.out.println(TAG + e.getMessage());
-            return null;
+            return inData;
         }
 
         return new ByteArrayInputStream(outData);

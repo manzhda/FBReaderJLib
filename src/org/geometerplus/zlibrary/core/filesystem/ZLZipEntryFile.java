@@ -91,7 +91,7 @@ final class ZLZipEntryFile extends ZLArchiveEntryFile {
 	public InputStream getInputStream() throws IOException {
         InputStream inputStream = getZipFile(myParent).getInputStream(myName);
 
-        if(myName.contains("html") && AESEncryptorFBreader.isEncrypted(inputStream)){
+        if((myName.contains(".xhtml") || myName.contains(".htm") || myName.contains(".pdf")) && AESEncryptorFBreader.isEncrypted(inputStream)){
             InputStream decryptedStream = AESEncryptorFBreader.decrypt(inputStream);
             inputStream.close();
             return decryptedStream;
