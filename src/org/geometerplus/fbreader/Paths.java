@@ -24,9 +24,11 @@ import org.geometerplus.zlibrary.core.options.ZLStringOption;
 import org.geometerplus.zlibrary.ui.android.library.ZLAndroidApplication;
 
 public abstract class Paths {
+    public static String APP_NAME;
+
     public static String cardDirectory() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            return Environment.getExternalStorageDirectory().getAbsolutePath();
+            return Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + APP_NAME;
         } else {
             return ZLAndroidApplication.getInstance().getCacheDir().getAbsolutePath();
         }
@@ -57,6 +59,6 @@ public abstract class Paths {
     }
 
     public static String systemShareDirectory() {
-        return "/system/usr/share/FBReader";
+        return "/system/usr/share/" + APP_NAME;
     }
 }
