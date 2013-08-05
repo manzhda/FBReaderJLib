@@ -228,13 +228,7 @@ public final class FBReaderApp extends ZLApplication {
 
 	synchronized void openBookInternal(Book book, Bookmark bookmark, boolean force) {
 		if (book == null) {
-			book = Library.Instance().getRecentBook();
-			if (book == null || !book.File.exists()) {
-				book = Book.getByFile(Library.getHelpFile());
-			}
-			if (book == null) {
-				return;
-			}
+			return;
 		}
 		if (!force && Model != null && bookmark == null
 			&& book.File.getPath().equals(Model.Book.File.getPath())) {
@@ -354,8 +348,14 @@ public final class FBReaderApp extends ZLApplication {
 	}
 
 	@Override
-	public void openFile(ZLFile file, Runnable postAction) {
-		openBook(createBookForFile(file), null, postAction);
+	public boolean openFile(ZLFile file, Runnable postAction) {
+        Book book = createBookForFile(file);
+        if (book != null) {
+            openBook(book, null, postAction);
+            return true;
+        } else {
+            return false;
+        }
 	}
 
 	public void onWindowClosing() {

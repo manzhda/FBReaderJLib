@@ -21,15 +21,14 @@ package org.geometerplus.zlibrary.ui.android.library;
 
 import java.lang.reflect.*;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.content.*;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.*;
 import android.os.PowerManager;
 
+import org.geometerplus.android.fbreader.FBReader;
 import org.geometerplus.zlibrary.core.application.ZLApplication;
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
 
@@ -102,9 +101,16 @@ public abstract class ZLAndroidActivity extends FragmentActivity {
 
 		new Thread() {
 			public void run() {
-				ZLApplication.Instance().openFile(fileFromIntent(getIntent()), getPostponedInitAction());
-				ZLApplication.Instance().getViewWidget().repaint();
-			}
+                boolean opened = ZLApplication.Instance().openFile(fileFromIntent(getIntent()), getPostponedInitAction());
+                if (opened) {
+                    ZLApplication.Instance().getViewWidget().repaint();
+                } else {
+                    LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(ZLAndroidActivity.this);
+                    Intent intent = new Intent(FBReader.BOOK_NOT_OPENED);
+                    broadcastManager.sendBroadcast(intent);
+                    finish();
+                }
+            }
 		}.start();
 
 		ZLApplication.Instance().getViewWidget().repaint();
