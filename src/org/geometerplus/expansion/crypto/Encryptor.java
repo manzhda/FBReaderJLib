@@ -20,6 +20,10 @@ public class Encryptor {
         mEncryptorSetting = setting;
     }
 
+    public EncryptorSetting getEncryptorSetting() {
+        return mEncryptorSetting;
+    }
+
     public String encrypt(String plainText, String deviceID) {
         return processText(plainText, deviceID, Cipher.ENCRYPT_MODE);
     }

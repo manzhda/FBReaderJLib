@@ -15,6 +15,10 @@ public class AESEncryptorFBreader {
         sEncryptor = new Encryptor(encryptorSetting);
     }
 
+    public static Encryptor getEncryptor() {
+        return sEncryptor;
+    }
+
     public static boolean isEncrypted(InputStream inputStream){
         return EncryptorUtils.isEncrypted(inputStream, sEncryptor.getEncryptedFilePrefix());
     }
