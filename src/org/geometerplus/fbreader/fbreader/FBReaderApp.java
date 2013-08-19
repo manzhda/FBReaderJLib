@@ -230,49 +230,43 @@ public final class FBReaderApp extends ZLApplication {
 		if (book == null) {
 			return;
 		}
-		if (!force && Model != null && bookmark == null
-			&& book.File.getPath().equals(Model.Book.File.getPath())) {
-			return;
-		}
 
-		if (book != null) {
-			onViewChanged();
+		onViewChanged();
 
-			storePosition();
-			BookTextView.setModel(null);
-			FootnoteView.setModel(null);
-			clearTextCaches();
+		storePosition();
+		BookTextView.setModel(null);
+		FootnoteView.setModel(null);
+		clearTextCaches();
 
-			Model = null;
-			System.gc();
-			System.gc();
-			try {
-				Model = BookModel.createModel(book);
-				ZLTextHyphenator.Instance().load(book.getLanguage());
-				BookTextView.setModel(Model.getTextModel());
-				BookTextView.gotoPosition(book.getStoredPosition());
-				if (bookmark == null) {
-					setView(BookTextView);
-				} else {
-					gotoBookmark(bookmark);
-				}
-				Library.Instance().addBookToRecentList(book);
-				final StringBuilder title = new StringBuilder(book.getTitle());
-				if (!book.authors().isEmpty()) {
-					boolean first = true;
-					for (Author a : book.authors()) {
-						title.append(first ? " (" : ", ");
-						title.append(a.DisplayName);
-						first = false;
-					}
-					title.append(")");
-				}
-				setTitle(title.toString());
-			} catch (BookReadingException e) {
-				processException(e);
+		Model = null;
+		System.gc();
+		System.gc();
+		try {
+			Model = BookModel.createModel(book);
+			ZLTextHyphenator.Instance().load(book.getLanguage());
+			BookTextView.setModel(Model.getTextModel());
+			BookTextView.gotoPosition(book.getStoredPosition());
+			if (bookmark == null) {
+				setView(BookTextView);
+			} else {
+				gotoBookmark(bookmark);
 			}
+			Library.Instance().addBookToRecentList(book);
+			final StringBuilder title = new StringBuilder(book.getTitle());
+			if (!book.authors().isEmpty()) {
+				boolean first = true;
+				for (Author a : book.authors()) {
+					title.append(first ? " (" : ", ");
+					title.append(a.DisplayName);
+					first = false;
+				}
+				title.append(")");
+			}
+			setTitle(title.toString());
+		} catch (BookReadingException e) {
+			processException(e);
 		}
-		getViewWidget().reset();
+	getViewWidget().reset();
 		getViewWidget().repaint();
 	}
 
