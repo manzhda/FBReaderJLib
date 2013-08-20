@@ -1,5 +1,6 @@
 package org.geometerplus.expansion.crypto;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -23,7 +24,7 @@ public class AESEncryptorFBreader {
         return EncryptorUtils.isEncrypted(inputStream, sEncryptor.getEncryptedFilePrefix());
     }
 
-    public static InputStream decrypt(InputStream inputStream){
+    public static InputStream decrypt(InputStream inputStream) throws IOException {
         return sEncryptor.decrypt(inputStream, sPassword);
     }
 

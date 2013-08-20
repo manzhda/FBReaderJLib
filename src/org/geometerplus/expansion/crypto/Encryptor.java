@@ -10,6 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
 
 public class Encryptor {
     private static final String TAG = Encryptor.class.getSimpleName();
@@ -24,23 +25,23 @@ public class Encryptor {
         return mEncryptorSetting;
     }
 
-    public String encrypt(String plainText, String deviceID) {
+    public String encrypt(String plainText, String deviceID) throws IOException {
         return processText(plainText, deviceID, Cipher.ENCRYPT_MODE);
     }
 
-    public String decrypt(String encryptedText, String deviceID) {
+    public String decrypt(String encryptedText, String deviceID) throws IOException {
         return processText(encryptedText, deviceID, Cipher.DECRYPT_MODE);
     }
 
-    public InputStream encrypt(InputStream plainText, String deviceID) {
+    public InputStream encrypt(InputStream plainText, String deviceID) throws IOException {
         return processText(plainText, deviceID, Cipher.ENCRYPT_MODE);
     }
 
-    public InputStream decrypt(InputStream encryptedText, String password) {
+    public InputStream decrypt(InputStream encryptedText, String password) throws IOException {
         return processText(encryptedText, password, Cipher.DECRYPT_MODE);
     }
 
-    private String processText(String inData, String password, int opmode) {
+    private String processText(String inData, String password, int opmode) throws IOException {
         InputStream inStreamData = null;
         try {
             inStreamData = new ByteArrayInputStream(inData.getBytes("UTF8"));
@@ -60,13 +61,15 @@ public class Encryptor {
         return null;
     }
 
-    private InputStream processText(InputStream inData, String password, int opmode) {
+    private InputStream processText(InputStream inData, String password, int opmode) throws IOException {
         byte[] outData;
         try {
             Cipher cipher = createChipher(opmode, password);
 
             byte[] inDataArray = EncryptorUtils.toByteArray(inData);
             outData = cipher.doFinal(inDataArray);
+        } catch (GeneralSecurityException e) {
+            throw new DecryptionError(e);
         } catch (Exception e) {
             System.out.println(TAG + e.getMessage());
             return inData;
@@ -75,7 +78,7 @@ public class Encryptor {
         return new ByteArrayInputStream(outData);
     }
 
-    public Cipher createChipher(int opmode, String seed) throws Exception {
+    public Cipher createChipher(int opmode, String seed) throws GeneralSecurityException, IOException {
         byte[] rawKey = EncryptorUtils.hmacDigest(seed, mEncryptorSetting.getSalt(), mEncryptorSetting.getHMacAlgorithm()).getBytes("UTF8");
 
         SecretKeySpec skeySpec = new SecretKeySpec(rawKey, mEncryptorSetting.getAlgorithm());
@@ -86,7 +89,7 @@ public class Encryptor {
         return cipher;
     }
 
-    public byte[] getRawKeyPBE(char[] seed) throws Exception {
+    public byte[] getRawKeyPBE(char[] seed) throws GeneralSecurityException {
         PBEKeySpec pbeKeySpec = new PBEKeySpec(seed);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(PBE_ALGORITHM);
         SecretKey tempKey = keyFactory.generateSecret(pbeKeySpec);
