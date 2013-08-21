@@ -107,11 +107,9 @@ public final class ZLAndroidApplicationWindow extends ZLApplicationWindow {
         exception.printStackTrace();
         Activity activity = ((ZLAndroidLibrary) ZLAndroidLibrary.Instance()).getActivity();
 
-        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(activity.getApplicationContext());
-        Throwable cause = exception.getCause();
         Intent broadcast = new Intent(FBReader.BOOK_NOT_OPENED);
-        broadcast.putExtra(FBReader.EXCEPTION, cause);
-        broadcastManager.sendBroadcast(broadcast);
+        broadcast.putExtra(FBReader.EXCEPTION, exception.getCause());
+        activity.getApplicationContext().sendBroadcast(broadcast);
         activity.finish();
     }
 

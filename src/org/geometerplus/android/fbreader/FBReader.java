@@ -53,7 +53,7 @@ import org.geometerplus.android.util.UIUtil;
 
 public final class FBReader extends ZLAndroidActivity {
 	public static final String BOOK_PATH_KEY = "BookPath";
-	public static final String BOOK_NOT_OPENED = "book_not_opened";
+	public static final String BOOK_NOT_OPENED = "org.geometerplus.zlibrary.ui.android.book_not_opened";
 	public static final String EXCEPTION = "exception";
 
 	public static final int REQUEST_PREFERENCES = 1;
