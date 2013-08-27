@@ -105,9 +105,8 @@ public abstract class ZLAndroidActivity extends FragmentActivity {
                 if (opened) {
                     ZLApplication.Instance().getViewWidget().repaint();
                 } else {
-                    LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(ZLAndroidActivity.this);
                     Intent intent = new Intent(FBReader.BOOK_NOT_OPENED);
-                    broadcastManager.sendBroadcast(intent);
+                    getApplicationContext().sendBroadcast(intent);
                     finish();
                 }
             }
