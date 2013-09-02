@@ -23,8 +23,6 @@ import java.io.*;
 import java.util.*;
 
 public abstract class ZLFile {
-	private final static HashMap<String,ZLFile> ourCachedFiles = new HashMap<String,ZLFile>();
-
 	protected interface ArchiveType {
 		int	NONE = 0;
 		int	GZIP = 0x0001;
@@ -38,7 +36,6 @@ public abstract class ZLFile {
 	private String myExtension;
 	private String myShortName;
 	protected int myArchiveType;
-	private boolean myIsCached;
 	protected void init() {
 		final String name = getLongName();
 		final int index = name.lastIndexOf('.');
@@ -76,10 +73,6 @@ public abstract class ZLFile {
 	public static ZLFile createFile(ZLFile parent, String name) {
 		ZLFile file = null;
 		if (parent == null) {
-			ZLFile cached = ourCachedFiles.get(name);
-			if (cached != null) {
-				return cached;
-			}
 			if (!name.startsWith("/")) {
 				return ZLResourceFile.createResourceFile(name);
 			} else {
@@ -93,23 +86,12 @@ public abstract class ZLFile {
 		} else {
 			file = ZLArchiveEntryFile.createArchiveEntryFile(parent, name);
 		}
-
-		if (!ourCachedFiles.isEmpty() && (file != null)) {
-			ZLFile cached = ourCachedFiles.get(file.getPath());
-			if (cached != null) {
-				return cached;
-			}
-		}
 		return file;
 	}
 
 	public static ZLFile createFileByPath(String path) {
 		if (path == null) {
 			return null;
-		}
-		ZLFile cached = ourCachedFiles.get(path);
-		if (cached != null) {
-			return cached;
 		}
 
 		if (!path.startsWith("/")) {
@@ -194,18 +176,9 @@ public abstract class ZLFile {
 	}
 
 	protected boolean isCached() {
-		return myIsCached;
+        return false;
 	}
 
 	public void setCached(boolean cached) {
-		myIsCached = cached;
-		if (cached) {
-			ourCachedFiles.put(getPath(), this);
-		} else {
-			ourCachedFiles.remove(getPath());
-			if (0 != (myArchiveType & ArchiveType.ZIP)) {
-				ZLZipEntryFile.removeFromCache(this);
-			}
-		}
 	}
 }
