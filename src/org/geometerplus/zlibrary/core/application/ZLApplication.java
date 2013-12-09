@@ -40,6 +40,8 @@ public abstract class ZLApplication {
 
 	private final HashMap<String,ZLAction> myIdToActionMap = new HashMap<String,ZLAction>();
 
+    private boolean isTTS = false;
+
 	protected ZLApplication() {
 		ourInstance = this;
 	}
@@ -296,4 +298,12 @@ public abstract class ZLApplication {
 			myTimerTaskPeriods.remove(runnable);
 		}
 	}
+
+    public boolean isTTS() {
+        return isTTS;
+    }
+
+    public void setTTS(boolean isVoice) {
+        this.isTTS = isVoice;
+    }
 }

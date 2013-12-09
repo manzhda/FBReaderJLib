@@ -405,6 +405,10 @@ public class ZLAndroidWidget extends View implements ZLViewWidget, View.OnLongCl
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		final ZLApplication application = ZLApplication.Instance();
 
+        if(ZLApplication.Instance().isTTS()){
+            return false;
+        }
+
 		if (application.hasActionForKey(keyCode, true) ||
 			application.hasActionForKey(keyCode, false)) {
 			if (myKeyUnderTracking != -1) {
