@@ -19,6 +19,7 @@
 
 package org.geometerplus.fbreader.fbreader;
 
+
 class VolumeKeyTurnPageAction extends FBAction {
 	private final boolean myForward;
 

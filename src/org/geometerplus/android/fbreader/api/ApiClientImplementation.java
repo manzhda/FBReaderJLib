@@ -66,6 +66,10 @@ public class ApiClientImplementation implements ServiceConnection, Api, ApiMetho
 		}
 	}
 
+    public boolean isConnected() {
+        return myInterface != null;
+    }
+
 	public void addListener(ApiListener listener) {
 		myApiListeners.add(listener);
 	}
@@ -171,7 +175,7 @@ public class ApiClientImplementation implements ServiceConnection, Api, ApiMetho
 		return stringList;
 	}
 
-	private List<Integer> requestIntegerList(int method, ApiObject[] params) throws ApiException {
+	private ArrayList<Integer> requestIntegerList(int method, ApiObject[] params) throws ApiException {
 		final List<ApiObject> list = requestList(method, params);
 		final ArrayList<Integer> intList = new ArrayList<Integer>(list.size());
 		for (ApiObject object : list) {
@@ -314,6 +318,10 @@ public class ApiClientImplementation implements ServiceConnection, Api, ApiMetho
 		return requestString(GET_PARAGRAPH_TEXT, envelope(paragraphIndex));
 	}
 
+//    public ArrayList<Integer> getParagraphIndices(int paragraphIndex) throws ApiException {
+//        return requestIntegerList(GET_PARAGRAPH_INDICES, envelope(paragraphIndex));
+//    }
+
 	public int getParagraphElementsCount(int paragraphIndex) throws ApiException {
 		return requestInt(GET_PARAGRAPH_ELEMENTS_COUNT, envelope(paragraphIndex));
 	}
@@ -322,7 +330,7 @@ public class ApiClientImplementation implements ServiceConnection, Api, ApiMetho
 		return requestStringList(GET_PARAGRAPH_WORDS, envelope(paragraphIndex));
 	}
 
-	public List<Integer> getParagraphWordIndices(int paragraphIndex) throws ApiException {
+	public ArrayList<Integer> getParagraphWordIndices(int paragraphIndex) throws ApiException {
 		return requestIntegerList(GET_PARAGRAPH_WORD_INDICES, envelope(paragraphIndex));
 	}
 
